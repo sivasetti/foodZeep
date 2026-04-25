@@ -23,7 +23,14 @@ getFood = async (user) => {
     return result;
 }
 
+
+updateFoodService = async (id, user, data) => {
+    const result = await foodModel.updateFood(id, user, data);
+    return result;
+}
+
 module.exports = {
     addFoodItem,
-    getFood
+    getFood,
+    updateFoodService
 }

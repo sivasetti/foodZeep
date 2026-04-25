@@ -31,4 +31,32 @@ getFood = async (user) => {
 }
 
 
-module.exports = {createFood, getFood};
+updateFood = async (id, user, data) => {
+    const {name, quantity, price, expiry_time, veg} = data;
+
+    let query;
+    let values;
+    
+
+    if(user.role === 'Admin'){
+        query = `UPDATE food_items 
+                SET name = ?, quantity = ?, price = ?, expiry_time = ?, veg = ? 
+                WHERE id = ?`; 
+                values = [name, quantity, price, expiry_time, veg, id];
+    }
+    else{
+        query = `UPDATE food_items 
+                SET name = ?, quantity = ?, price = ?, expiry_time = ?, veg = ? 
+                WHERE id = ? AND seller_id = ?`;
+                values = [name, quantity, price, expiry_time, veg, id, user.id];
+    }
+
+    const [result] = await db.query(query, values);
+
+    return result;
+}
+
+
+
+
+module.exports = {createFood, getFood, updateFood};
