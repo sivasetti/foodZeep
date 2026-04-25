@@ -1,14 +1,18 @@
 const express = require('express');
-const authRoutes = require('./modules/auth/auth.routes');
 require('dotenv').config();
 
 const app = express();
-
-
-
 app.use(express.json());
-app.use('/auth', authRoutes);
 
+
+const authRoutes = require('./modules/auth/auth.routes');
+const foodRoutes = require('./modules/food/food.routes');
+
+
+
+
+app.use('/auth', authRoutes);
+app.use('/food', foodRoutes);
 
 
 
