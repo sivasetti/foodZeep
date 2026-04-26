@@ -26,7 +26,7 @@ createFood = async (data) => {
 getFood = async (user) => {
 
         const [result] = await db.query(`SELECT * from food_items where seller_id = ?`,[user.id]);
-        return [result];
+        return result;
     
 }
 
@@ -57,6 +57,22 @@ updateFood = async (id, user, data) => {
 }
 
 
+removeFoodModel = async (id, user) => {
+    let query;
+    let values;
+
+    if (user.role === 'Admin'){
+        query = `DELETE FROM food_items WHERE id = ?`; values = [id]
+    }
+    else{
+        query = `DELETE FROM food_items WHERE id = ?  AND seller_id = ?`; values = [id, user.id]
+    }
+    const [result] = await db.query(query, values);
+
+    return result;
+}
 
 
-module.exports = {createFood, getFood, updateFood};
+
+
+module.exports = {createFood, getFood, updateFood, removeFoodModel};

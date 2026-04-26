@@ -19,7 +19,7 @@ const foodModel = require('./food.model');
 }
 
 getFood = async (user) => {
-    const [result] = await foodModel.getFood(user);
+    const result = await foodModel.getFood(user);
     return result;
 }
 
@@ -29,8 +29,14 @@ updateFoodService = async (id, user, data) => {
     return result;
 }
 
+removeFoodService = async (id, user) => {
+    const result = await foodModel.removeFoodModel(id, user);
+    return result;
+}
+
 module.exports = {
     addFoodItem,
     getFood,
-    updateFoodService
+    updateFoodService,
+    removeFoodService
 }
