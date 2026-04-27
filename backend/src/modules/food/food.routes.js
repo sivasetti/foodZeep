@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const authMiddleware = require('../../middleware/auth.middleware');
+const authMiddleware = require('../../middlewares/auth.middleware');
+const validate = require('../../middlewares/validation.middleware');
+const {addFoodSchema, updateFoodSchema} = require('../../validators/food.validator');
 const foodController = require('./food.controller');
 
 /**
@@ -44,7 +46,7 @@ const foodController = require('./food.controller');
  *       500:
  *         description: Server Error
  */
-router.post('/add',authMiddleware.protect, authMiddleware.authorize('Admin', 'seller'), foodController.addFood);
+router.post('/add',validate(addFoodSchema), authMiddleware.protect, authMiddleware.authorize('Admin', 'seller'), foodController.addFood);
 
 /**
  * @swagger
@@ -113,7 +115,7 @@ router.get('/my-food', authMiddleware.protect, authMiddleware.authorize('seller'
  *       500:
  *         description: Server Error
  */
-router.put('/update/:id', authMiddleware.protect, authMiddleware.authorize('seller', 'Admin'), foodController.updateFoodController);
+router.put('/update/:id', validate(updateFoodSchema), authMiddleware.protect, authMiddleware.authorize('seller', 'Admin'), foodController.updateFoodController);
 
 /**
  * @swagger

@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const authController = require('./auth.controller');
-const authMiddleware = require('../../middleware/auth.middleware.js');
+const authMiddleware = require('../../middlewares/auth.middleware.js');
+const validate = require('../../middlewares/validation.middleware.js')
+const {registerSchema, loginSchema}= require('../../validators/auth.validator.js');
+const { valid } = require('joi');
 
 
-
-router.post('/register', authController.register);
+router.post('/register',validate(registerSchema), authController.register);
 
 router.get('/getAllUsers',authMiddleware.protect, authMiddleware.authorize('Admin'), authController.getUsersAll);
 
@@ -39,6 +41,6 @@ router.get('/getAllUsers',authMiddleware.protect, authMiddleware.authorize('Admi
  *         description: Invalid credentials
  */
 
-router.post('/login', authController.login);
+router.post('/login',validate(loginSchema), authController.login);
 
 module.exports = router;
