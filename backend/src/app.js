@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../src/config/swagger');
+const errorHandler = require('../src/middlewares/error.middleware')
 
 const app = express();
 app.use(express.json());
@@ -20,7 +21,7 @@ const foodRoutes = require('./modules/food/food.routes');
 
 app.use('/auth', authRoutes);
 app.use('/food', foodRoutes);
-
+app.use(errorHandler);
 
 
 

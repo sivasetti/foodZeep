@@ -13,10 +13,7 @@ const foodService = require('./food.service');
         });
     }
     catch(error){
-        return res.status(400).json({
-            nessage :  `Unable to add food item`,
-            error : error.message
-        });
+        next(error);
     }
 }
 
@@ -33,10 +30,7 @@ getFood = async (req, res) => {
         });
     }
     catch(error){
-        return res.status(500).json({
-            message : `unable to fetch food`,
-            error : error.message
-        });
+        next(error);
     }
 }
 
@@ -53,10 +47,7 @@ updateFoodController = async (req, res) => {
         });
     }
     catch(error){
-        return res.status(403).json({
-            message : 'unable to update food',
-            error : error.message
-        });
+        next(error);
     }
 }
 
@@ -77,12 +68,13 @@ removeFoodController = async (req, res) => {
         })
     }
     catch(error){
-        res.status(403).json({
-            success : false,
-            message : `Unable to remove food`,
-            error : error.message
-        });
+        next(error);
     }
-}
+};
 
-module.exports = {addFood, getFood, updateFoodController, removeFoodController};
+module.exports = {
+    addFood, 
+    getFood, 
+    updateFoodController, 
+    removeFoodController
+};

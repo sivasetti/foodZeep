@@ -12,9 +12,7 @@ register = async (req, res) => {
         });
     }
     catch(err){
-        res.status(400).json({
-            error : err.message
-        });
+        next(error)
     }
 }
 
@@ -29,11 +27,8 @@ getUsersAll = async (req, res) => {
             });
 
         }
-        catch(err){
-            res.status(400).json({
-                message : `Unable to fetch Users`,
-                error : err
-            });
+        catch(error){
+            next(error)
         }
 }
 
@@ -49,10 +44,7 @@ login = async (req, res) => {
         });
     }
     catch(error){
-        res.status(400).json({
-            message : `Unable to login`,
-            error : error.message
-        });
+        next(error)
     }
 
 }
