@@ -1,6 +1,6 @@
 const foodService = require('./food.service');
 
- addFood = async (req, res) => {
+ addFood = async (req, res, next) => {
     try{
         const result = await foodService.addFoodItem(
             req.body,
@@ -18,7 +18,7 @@ const foodService = require('./food.service');
 }
 
 
-getFood = async (req, res) => {
+getFood = async (req, res, next) => {
     try{
         const result = await foodService.getFood(
             req.user
@@ -36,7 +36,7 @@ getFood = async (req, res) => {
 
 
 
-updateFoodController = async (req, res) => {
+updateFoodController = async (req, res, next) => {
     try{
         const result = await foodService.updateFoodService(req.params.id, req.user, req.body);
         
@@ -51,7 +51,7 @@ updateFoodController = async (req, res) => {
     }
 }
 
-removeFoodController = async (req, res) => {
+removeFoodController = async (req, res, next) => {
     try{
         const result = await foodService.removeFoodService(req.params.id, req.user);
         if(result.affectedRows === 0){
