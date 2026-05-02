@@ -63,4 +63,4 @@ foodZeep is a full-stack application that helps:
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structures

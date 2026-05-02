@@ -23,9 +23,28 @@ createFood = async (data) => {
 }
 
 
-getFood = async (user) => {
+getFood = async (user, query) => {
+        let page = parseInt(query.page) || 1;
+        let limit = parseInt(query.limit) || 10;
+        let offset = (page - 1) * limit;
+        let search = query.search || '';
+        let veg = query.veg;
 
-        const [result] = await db.query(`SELECT * from food_items where seller_id = ?`,[user.id]);
+        let sql = `SELECT * FROM food_items
+                    WHERE seller_id = ? 
+                    AND name LIKE ? `;
+        
+        let values = [user.id, `${search}`];
+        if(veg !== undefined){
+            sql += `AND veg = ?`;
+            values.push(veg === 'true' ? 1 : 0)
+        }
+
+        sql += `LIMIT ? OFFSET ?`;
+        values.push(limit, offset);
+
+
+        const [result] = await db.query(sql, values);
         return result;
     
 }

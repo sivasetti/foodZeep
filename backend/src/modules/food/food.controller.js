@@ -21,7 +21,7 @@ const foodService = require('./food.service');
 getFood = async (req, res, next) => {
     try{
         const result = await foodService.getFood(
-            req.user
+            req.user, req.query
         )
 
         return res.status(200).json({
