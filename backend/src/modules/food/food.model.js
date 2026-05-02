@@ -36,11 +36,11 @@ getFood = async (user, query) => {
         
         let values = [user.id, `%${search}%`];
         if(veg !== undefined){
-            sql += `AND veg = ?`;
+            sql += ` AND veg = ?`;
             values.push(veg === 'true' ? 1 : 0)
         }
 
-        sql += `ORDER BY expiry_time ASC LIMIT ? OFFSET ?`;
+        sql += ` ORDER BY expiry_time ASC LIMIT ? OFFSET ?`;
         values.push(limit, offset);
 
 
