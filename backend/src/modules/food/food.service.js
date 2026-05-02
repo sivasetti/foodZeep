@@ -19,7 +19,7 @@ const foodModel = require('./food.model');
 }
 
 getFood = async (user, query) => {
-    const result = await foodModel.getFood(user);
+    const result = await foodModel.getFood(user, query);
     return result;
 }
 
