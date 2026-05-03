@@ -99,7 +99,7 @@ router.get(
   authMiddleware.authorize('seller', 'Admin'),
   foodController.getFood
 );
-router.get('/my-food', authMiddleware.protect, authMiddleware.authorize('seller', 'Admin'), foodController.getFood);
+
 
 /**
  * @swagger
