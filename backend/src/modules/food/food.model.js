@@ -54,7 +54,7 @@ getFood = async (user, query) => {
 
         if(veg !== undefined){
             countSql += ` AND veg = ?`;
-            countValues.push(veg === true ? 1 : 0);
+            countValues.push(veg === 'true' ? 1 : 0);
         }
 
         const [countResult] = await db.query(countSql, countValues);
@@ -96,7 +96,7 @@ updateFood = async (id, user, data) => {
     let values;
     
 
-    if(user.role === 'Admin'){
+    if(user.role.toLowerCase() === 'admin'){
         query = `UPDATE food_items 
                 SET name = ?, quantity = ?, price = ?, expiry_time = ?, veg = ? 
                 WHERE id = ?`; 
@@ -119,7 +119,7 @@ removeFoodModel = async (id, user) => {
     let query;
     let values;
 
-    if (user.role === 'Admin'){
+    if (user.role.toLowerCase() === 'admin'){
         query = `DELETE FROM food_items WHERE id = ?`; values = [id]
     }
     else{
