@@ -29,6 +29,40 @@ getFood = async (user, query) => {
         let offset = (page - 1) * limit;
         let search = query.search || '';
         let veg = query.veg;
+        let sort = query.sort || 'expiry_time';
+        let order = query.order || 'ASC'; 
+
+
+        // sorting
+
+        let allowedSortFields = ['price', 'expiry_time', 'name'];
+
+        if(!allowedSortFields.includes(sort)){
+            sort = 'expiry_time'
+        }
+        if(order !== 'ASC' && order !== 'DESC'){
+            order = 'ASC'
+        }
+
+        // count query
+
+        let countSql = `SELECT COUNT(*) AS total FROM food_items
+                            WHERE seller_id = ?
+                            AND name LIKE ?`
+
+        let countValues = [user.id, `%${search}%`];
+
+        if(veg !== undefined){
+            countSql += ` AND veg = ?`;
+            countValues.push(veg === true ? 1 : 0);
+        }
+
+        const [countResult] = await db.query(countSql, countValues);
+        const total = countResult[0].total;
+        const totalPages = Math.ceil(total/limit);
+
+
+        // Data Query
 
         let sql = `SELECT * FROM food_items
                     WHERE seller_id = ? 
@@ -40,13 +74,18 @@ getFood = async (user, query) => {
             values.push(veg === 'true' ? 1 : 0)
         }
 
-        sql += ` ORDER BY expiry_time ASC LIMIT ? OFFSET ?`;
+        sql += ` ORDER BY ${sort} ${order} LIMIT ? OFFSET ?`;
         values.push(limit, offset);
 
 
         const [result] = await db.query(sql, values);
-        return result;
-    
+        return {
+            data : result,
+            page,
+            limit,
+            total,
+            totalPages
+        };  
 }
 
 

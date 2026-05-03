@@ -53,19 +53,52 @@ router.post('/add',validate(addFoodSchema), authMiddleware.protect, authMiddlewa
  * /food/my-food:
  *   get:
  *     summary: Get seller food items
- *     description: Fetch all food items created by the logged-in seller
+ *     description: Fetch all food items with pagination, filtering, and sorting
  *     tags:
  *       - Food
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         example: 10
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         example: biryani
+ *       - in: query
+ *         name: veg
+ *         schema:
+ *           type: boolean
+ *         example: true
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *         example: price
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *         example: DESC
  *     responses:
  *       200:
  *         description: Food items fetched successfully
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Server Error
  */
+router.get(
+  '/my-food',
+  authMiddleware.protect,
+  authMiddleware.authorize('seller', 'Admin'),
+  foodController.getFood
+);
 router.get('/my-food', authMiddleware.protect, authMiddleware.authorize('seller', 'Admin'), foodController.getFood);
 
 /**
