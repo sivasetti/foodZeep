@@ -43,4 +43,11 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  );
 
 
+ router.get('/fetch',
+      authMiddleware.protect,
+      authMiddleware.authorize('buyer', 'Admin'),
+      validate(checkOutSchema),
+      orderController.getOrder
+ );
+
  module.exports = router;

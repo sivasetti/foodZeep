@@ -31,5 +31,5 @@ app.get('/', (req, res) => {
     res.json({message : `FoodZeep API is running!`});
 });
 
-console.log(typeof errorHandler)
+// console.log(typeof errorHandler)
 module.exports = app;

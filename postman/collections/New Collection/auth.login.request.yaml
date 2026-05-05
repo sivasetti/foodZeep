@@ -1,0 +1,8 @@
+$kind: http-request
+name: auth.login
+url: http
+method: POST
+body:
+  type: json
+  content: ""
+order: 1513829800631050

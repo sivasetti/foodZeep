@@ -17,6 +17,25 @@ const addOrder = async (req, res, next) => {
     }
 }
 
+
+const getOrder = async (req, res, next) => {
+    try{
+        const userId = req.user.id;
+
+        const result = await orderService.getOrder(userId);
+
+        return res.status(200).json({
+            success : true,
+            message : "Orders fetched successfully",
+            data : result
+        });
+    }
+    catch(error){
+        next(error);
+    }
+}
+
 module.exports = {
-    addOrder
+    addOrder,
+    getOrder
 }
