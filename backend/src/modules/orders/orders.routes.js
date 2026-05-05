@@ -42,7 +42,32 @@ const { checkOutSchema } = require('../../validators/orders.validator');
     orderController.addOrder
  );
 
-
+/**
+ * @swagger
+ * /orders/my-orders:
+ *   get:
+ *     summary: Get logged-in user's order history
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of orders with nested items
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data: [
+ *                 {
+ *                   "order_id": 1,
+ *                   "total_amount": 500.00,
+ *                   "status": "pending",
+ *                   "items": [
+ *                     { "name": "Biryani", "quantity": 2, "price": 250.00 }
+ *                   ]
+ *                 }
+ *               ]
+ */
  router.get('/fetch',
       authMiddleware.protect,
       authMiddleware.authorize('buyer', 'Admin'),
