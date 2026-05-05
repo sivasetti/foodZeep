@@ -68,7 +68,7 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  *                 }
  *               ]
  */
- router.get('/fetch',
+ router.get('/my-orders',
       authMiddleware.protect,
       authMiddleware.authorize('buyer', 'Admin'),
       validate(checkOutSchema),

@@ -1,5 +1,9 @@
 $kind: http-request
 name: getOrders
-url: ""
+url: http://localhost:5000/orders/fetch
 method: GET
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJzaXZhQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3Nzk1NjI0MywiZXhwIjoxNzc4MDQyNjQzfQ.xA6WgFNjTW4YlfdGYYFmAYKI-ygnLlO63VdS3wANvwc
 order: 3024620618032715

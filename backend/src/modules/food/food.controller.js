@@ -2,10 +2,14 @@ const foodService = require('./food.service');
 
  addFood = async (req, res, next) => {
     try{
+        
+        const image_url = req.file ? `${req.file.filename}` : null;
+
         const result = await foodService.addFoodItem(
             req.body,
-            req.user
-        )
+            req.user,
+            image_url
+        );
 
         return res.status(200).json({
             message : `Food item added successfully`,
