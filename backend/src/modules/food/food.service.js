@@ -2,7 +2,7 @@ const foodModel = require('./food.model');
 
 
  addFoodItem = async (data, user) => {
-    const {name, quantity, price, expiry_time, veg } = data;
+    const {name, quantity, price, expiry_time, veg, image_url } = data;
     const seller_id = user.id;
     
     const result = await foodModel.createFood({
@@ -11,7 +11,8 @@ const foodModel = require('./food.model');
         quantity,
         price,
         expiry_time,
-        veg    
+        veg,
+        image_url
     });
 
     return result;

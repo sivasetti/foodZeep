@@ -8,15 +8,18 @@ createFood = async (data) => {
         quantity,
         price,
         expiry_time,
-        veg
+        veg,
+        image_url
     } = data;
 
-    const [result] = await db.query(`INSERT INTO food_items(seller_id,
+    const [result] = await db.query(`INSERT INTO food_items(
+        seller_id,
         name,
         quantity,
         price,
         expiry_time,
-        veg) VALUES (?,?,?,?,?,?)`,[seller_id, name, quantity, price, expiry_time, veg]);
+        veg,
+        image_url) VALUES (?,?,?,?,?,?,?)`,[seller_id, name, quantity, price, expiry_time, veg, image_url]);
 
 
     return result;

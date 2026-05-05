@@ -5,13 +5,14 @@ const foodService = require('./food.service');
         
         const image_url = req.file ? `${req.file.filename}` : null;
 
-        const result = await foodService.addFoodItem(
-            req.body,
-            req.user,
-            image_url
-        );
+        const foodData = {
+            ...req.body,
+            image_url : image_url
+        }
 
-        return res.status(200).json({
+        const result = await foodService.addFoodItem(foodData, req.user);
+
+        return res.status(201).json({
             message : `Food item added successfully`,
             data : result
         });

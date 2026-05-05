@@ -1,0 +1,38 @@
+$kind: http-request
+name: New Request
+url: http://localhost:5000/food/add
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: chicken dum biryani
+      description: ""
+      disabled: false
+    - type: text
+      key: description
+      value: Hyderabad Spicy
+      description: ""
+      disabled: false
+    - type: text
+      key: price
+      value: "350"
+      description: ""
+      disabled: false
+    - type: text
+      key: category
+      value: Main Course
+      description: ""
+      disabled: false
+    - type: file
+      key: image
+      src:
+        - postman-cloud:///1ef0612d-998c-4320-88ba-636a574a267a
+      description: ""
+      disabled: false
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJzaXZhQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3ODAwNTQxNywiZXhwIjoxNzc4MDkxODE3fQ.boyg9X1vX-87__jIVsogxQVn_GinLWIJPExkJKgYCK
+order: 3788125090003062
