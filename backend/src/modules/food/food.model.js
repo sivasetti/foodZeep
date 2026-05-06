@@ -32,13 +32,13 @@ getFood = async (user, query) => {
         let offset = (page - 1) * limit;
         let search = query.search || '';
         let veg = query.veg;
-        let sort = query.sort || 'expiry_time';
+        let sort = query.sort;
         let order = query.order || 'ASC'; 
 
 
         // sorting
 
-        let allowedSortFields = ['price', 'expiry_time', 'name'];
+        let allowedSortFields = ['price', 'expiry_time', 'name', 'id'];
 
         if(!allowedSortFields.includes(sort)){
             sort = 'expiry_time'
@@ -92,6 +92,12 @@ getFood = async (user, query) => {
 }
 
 
+getFoodById = async (id) =>{
+    const [rows] = await db.query(`SELECT * FROM food_items WHERE id = ?`, [id]);
+    return rows[0];
+};
+
+
 updateFood = async (id, user, data) => {
     const {name, quantity, price, expiry_time, veg} = data;
 
@@ -123,10 +129,12 @@ removeFoodModel = async (id, user) => {
     let values;
 
     if (user.role.toLowerCase() === 'admin'){
-        query = `DELETE FROM food_items WHERE id = ?`; values = [id]
+        query = `DELETE FROM food_items WHERE id = ?`; 
+        values = [id];
     }
     else{
-        query = `DELETE FROM food_items WHERE id = ?  AND seller_id = ?`; values = [id, user.id]
+        query = `DELETE FROM food_items WHERE id = ?  AND seller_id = ?`; 
+        values = [id, user.id]
     }
     const [result] = await db.query(query, values);
 
@@ -136,4 +144,11 @@ removeFoodModel = async (id, user) => {
 
 
 
-module.exports = {createFood, getFood, updateFood, removeFoodModel};
+module.exports = {
+    createFood, 
+    getFood, 
+    getFoodById,
+    updateFood, 
+    removeFoodModel
+    
+};

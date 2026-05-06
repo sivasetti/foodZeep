@@ -1,9 +1,11 @@
 $kind: http-request
-name: getOrders
-url: http://localhost:5000/orders/fetch
+name: food/my-food?sort=id&order=ASC
+url: http://localhost:5000/food/my-food?sortBy=
 method: GET
+queryParams:
+  sortBy: ""
 auth:
-  type: bearer
   credentials:
     token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJzaXZhQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3ODA5MzQ3MywiZXhwIjoxNzc4MTc5ODczfQ.6OVdGz1tLgRtyZIyzHFZ6SDPoPS-YlvQkuEkIGF7CSQ
-order: 3024620618032715
+  type: bearer
+order: 4145330528503875

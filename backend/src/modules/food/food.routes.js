@@ -10,16 +10,15 @@ const foodController = require('./food.controller');
  * @swagger
  * /food/add:
  *   post:
- *     summary: Add food item
- *     description: Seller adds a new food item
- *     tags:
- *       - Food
+ *     summary: Add food item with image
+ *     description: Seller adds a new food item including an image file.
+ *     tags: [Food]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -34,17 +33,17 @@ const foodController = require('./food.controller');
  *                 example: 150
  *               expiry_time:
  *                 type: string
- *                 example: 2026-04-28 12:00:00
+ *                 example: "2026-04-28 12:00:00"
  *               veg:
  *                 type: boolean
  *                 example: false
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: The food image file to upload (jpg, png, webp)
  *     responses:
- *       200:
+ *       201:
  *         description: Food item added successfully
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Server Error
  */
 router.post('/add',
   validate(addFoodSchema),
@@ -155,15 +154,13 @@ router.get(
  *         description: Server Error
  */
 router.put('/update/:id', validate(updateFoodSchema), authMiddleware.protect, authMiddleware.authorize('seller', 'Admin'), foodController.updateFoodController);
-
 /**
  * @swagger
  * /food/delete/{id}:
  *   delete:
  *     summary: Delete food item
- *     description: Delete a food item by ID
- *     tags:
- *       - Food
+ *     description: Removes a food item from the database and deletes its image file from the server.
+ *     tags: [Food]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -172,16 +169,12 @@ router.put('/update/:id', validate(updateFoodSchema), authMiddleware.protect, au
  *         required: true
  *         schema:
  *           type: integer
- *         description: Food item ID
+ *         description: The ID of the food item to delete
  *     responses:
  *       200:
- *         description: Food deleted successfully
- *       403:
- *         description: Forbidden
+ *         description: Food and associated image deleted successfully
  *       404:
- *         description: Food not found
- *       500:
- *         description: Server Error
+ *         description: Food item not found
  */
 router.delete('/delete/:id', authMiddleware.protect, authMiddleware.authorize('seller', 'Admin'), foodController.removeFoodController);
 

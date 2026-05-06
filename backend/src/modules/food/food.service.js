@@ -1,4 +1,6 @@
 const foodModel = require('./food.model');
+const fs = require('fs');
+const path = require('path');
 
 
  addFoodItem = async (data, user) => {
@@ -19,8 +21,8 @@ const foodModel = require('./food.model');
     
 }
 
-getFood = async (user) => {
-    const result = await foodModel.getFood(user);
+getFood = async (user, query) => {
+    const result = await foodModel.getFood(user, query);
     return result;
 }
 
@@ -31,7 +33,20 @@ updateFoodService = async (id, user, data) => {
 }
 
 removeFoodService = async (id, user) => {
+    const food = await foodModel.getFoodById(id);
+    if(!food){
+        throw new Error('Food not found');
+    }
     const result = await foodModel.removeFoodModel(id, user);
+
+    if(result.affectedRows>0 && food.image_url){
+        const filePath = path.join(process.cwd(), food.image_url);
+            if(fs.existsSync(filePath)){
+                fs.unlink(filePath, (err) =>{
+                    if (err) console.error("Failed to delete image file:", err);
+                });
+        }
+    }
     return result;
 }
 
