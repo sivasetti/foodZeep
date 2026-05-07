@@ -40,6 +40,14 @@ const getOrdersByUserId = async (userId) => {
     return result;
 }
 
+const removeOrders = async (id) => {
+    
+}
+
+const removeOrderItem = async (id) => {
+    
+}
+
 
 module.exports = {
     createOrder,

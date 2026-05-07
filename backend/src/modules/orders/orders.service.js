@@ -40,6 +40,11 @@ const getOrder = async (userId) => {
 }
 
 
+const removeOrders = async (userId) => {
+    
+}
+
+
 
 module.exports = {
     placeOrder,

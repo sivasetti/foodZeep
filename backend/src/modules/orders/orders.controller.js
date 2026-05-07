@@ -35,6 +35,10 @@ const getOrder = async (req, res, next) => {
     }
 }
 
+
+const removeOrder = async (req, res, next) => {
+    
+}
 module.exports = {
     addOrder,
     getOrder
