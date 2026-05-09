@@ -41,7 +41,12 @@ const getOrder = async (userId) => {
 
 
 const removeOrders = async (userId) => {
-    
+    try{
+
+    }
+    catch(error){
+        
+    }
 }
 
 
