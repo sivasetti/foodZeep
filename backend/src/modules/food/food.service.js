@@ -21,8 +21,18 @@ const path = require('path');
     
 }
 
-getFood = async (user, query) => {
-    const result = await foodModel.getFood(user, query);
+const getFood = async (user, query) => {
+    const filters = {
+        search : query.search || '',
+        veg : query.veg,
+        price : query.price ? parseFloat(query.price) : null,
+        sort : query.sort || 'id',
+        order : query.order || 'ASC',
+        page : parseInt(query.page) || 1,
+        limit : parseInt(query.limit) || 10
+    }
+
+    const result = await foodModel.getFood(user, filters);
     return result;
 }
 

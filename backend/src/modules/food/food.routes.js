@@ -57,10 +57,9 @@ router.post('/add',
  * @swagger
  * /food/my-food:
  *   get:
- *     summary: Get seller food items
- *     description: Fetch all food items with pagination, filtering, and sorting
- *     tags:
- *       - Food
+ *     summary: Fetch food items with advanced filtering
+ *     description: Returns a paginated list of food items. Sellers see their own items; Admins/Buyers see all.
+ *     tags: [Food]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -68,35 +67,47 @@ router.post('/add',
  *         name: page
  *         schema:
  *           type: integer
- *         example: 1
+ *           default: 1
+ *         description: Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         example: 10
+ *           default: 10
+ *         description: Number of items per page
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         example: biryani
+ *         description: Search by food name
  *       - in: query
  *         name: veg
  *         schema:
- *           type: boolean
- *         example: true
+ *           type: string
+ *           enum: [true, false]
+ *         description: Filter by veg/non-veg
  *       - in: query
  *         name: sort
  *         schema:
  *           type: string
- *         example: price
+ *           enum: [price, expiry_time, name, id]
+ *         description: Field to sort by
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
- *         example: DESC
+ *           enum: [ASC, DESC]
+ *         description: Sort direction
  *     responses:
  *       200:
- *         description: Food items fetched successfully
+ *         description: Successful response with data and pagination metadata
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data:
+ *                 data: [{ "id": 1, "name": "Biryani", "price": 250 }]
+ *                 pagination: { "total": 50, "page": 1, "limit": 10, "totalPages": 5 }
  */
 router.get(
   '/my-food',

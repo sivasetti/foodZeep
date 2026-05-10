@@ -27,74 +27,48 @@ createFood = async (data) => {
 
 
 getFood = async (user, query) => {
-        let page = parseInt(query.page) || 1;
-        let limit = parseInt(query.limit) || 10;
-        let offset = (page - 1) * limit;
-        let search = query.search || '';
-        let veg = query.veg;
-        let sort = query.sort;
-        let order = query.order || 'ASC'; 
+        const {search, veg, price, sort = 'id', order = 'ASC', page = 1, limit = 10} = filters;
+        const offset = (page - 1) * limit;
 
+        let filterSql = `FROM food_items WHERE 1=1`;
+        const queryParams = [];
 
-        // sorting
-
-        let allowedSortFields = ['price', 'expiry_time', 'name', 'id'];
-
-        if(!allowedSortFields.includes(sort)){
-            sort = 'expiry_time'
-        }
-        if(order !== 'ASC' && order !== 'DESC'){
-            order = 'ASC'
+        if(user.role.toLowerCase() === 'seller'){
+            filterSql += `AND seller_id = ?`;
+            queryParams.push(user.id);
         }
 
-        // count query
-
-        let countSql = `SELECT COUNT(*) AS total FROM food_items
-                            WHERE seller_id = ?
-                            AND name LIKE ?`
-
-        let countValues = [user.id, `%${search}%`];
-
-        if(veg !== undefined){
-            countSql += ` AND veg = ?`;
-            countValues.push(veg === 'true' ? 1 : 0);
+        if(search){
+            filterSql += `AND name LIKE ?`;
+            queryParams.push(`${search}`);
         }
 
-        const [countResult] = await db.query(countSql, countValues);
+        if( veg != undefined){
+            filterSql += `AND veg = ?`;
+            queryParams.push(veg === 'true' ? 1 : 0);
+        }
+
+        const [countResult] = await db.query(`SELECT COUNT(*) AS total` + filterSql, queryParams);
         const total = countResult[0].total;
-        const totalPages = Math.ceil(total/limit);
 
+        let dataSql = `SELECT *` + filterSql + `ORDER BY ${sort} ${order} LIMIT ? OFFSET ?`;
+        const [result] = await db.query(dataSql, [...queryParams, parseInt(limit), offset]);
 
-        // Data Query
-
-        let sql = `SELECT * FROM food_items
-                    WHERE seller_id = ? 
-                    AND name LIKE ? `;
-        
-        let values = [user.id, `%${search}%`];
-        if(veg !== undefined){
-            sql += ` AND veg = ?`;
-            values.push(veg === 'true' ? 1 : 0)
-        }
-
-        sql += ` ORDER BY ${sort} ${order} LIMIT ? OFFSET ?`;
-        values.push(limit, offset);
-
-
-        const [result] = await db.query(sql, values);
         return {
             data : result,
-            page,
-            limit,
-            total,
-            totalPages
-        };  
-}
+            pagination : {
+                total,
+                page : parseInt(page),
+                limit : parseInt(limit),
+                totalPages : Math.ceil(total/limit)
+            }
+        };        
+};
 
 
 getFoodById = async (id) =>{
-    const [rows] = await db.query(`SELECT * FROM food_items WHERE id = ?`, [id]);
-    return rows[0];
+    const [result] = await db.query(`SELECT * FROM food_items WHERE id = ?`, [id]);
+    return result[0];
 };
 
 
