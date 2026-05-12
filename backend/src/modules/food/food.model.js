@@ -26,32 +26,32 @@ createFood = async (data) => {
 }
 
 
-getFood = async (user, query) => {
+getFood = async (user, filters) => {
         const {search, veg, price, sort = 'id', order = 'ASC', page = 1, limit = 10} = filters;
         const offset = (page - 1) * limit;
 
-        let filterSql = `FROM food_items WHERE 1=1`;
+        let filterSql = ` FROM food_items WHERE 1=1`;
         const queryParams = [];
 
         if(user.role.toLowerCase() === 'seller'){
-            filterSql += `AND seller_id = ?`;
+            filterSql += ` AND seller_id = ?`;
             queryParams.push(user.id);
         }
 
         if(search){
-            filterSql += `AND name LIKE ?`;
+            filterSql += ` AND name LIKE ?`;
             queryParams.push(`${search}`);
         }
 
         if( veg != undefined){
-            filterSql += `AND veg = ?`;
+            filterSql += ` AND veg = ?`;
             queryParams.push(veg === 'true' ? 1 : 0);
         }
 
         const [countResult] = await db.query(`SELECT COUNT(*) AS total` + filterSql, queryParams);
         const total = countResult[0].total;
 
-        let dataSql = `SELECT *` + filterSql + `ORDER BY ${sort} ${order} LIMIT ? OFFSET ?`;
+        let dataSql = `SELECT *` + filterSql + ` ORDER BY ${sort} ${order} LIMIT ? OFFSET ?`;
         const [result] = await db.query(dataSql, [...queryParams, parseInt(limit), offset]);
 
         return {

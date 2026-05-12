@@ -8,7 +8,7 @@ const foodList = document.getElementById('foodList');
 
 loadFood.addEventListener('click',async ()=>{
     try{
-        const response = await fetch('http://localhost:5000/food/my-food?veg=true&sort=price&order=ASC',{
+        const response = await fetch('http://localhost:5000/food/my-food?veg=true&sort=price&order=ASC&page=3&limit=2',{
             method : 'GET',
             headers : {
                 'Authorization' : `Bearer ${token}`

@@ -76,5 +76,6 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  );
 
 
-router.delete('delete/')
+// router.delete('delete/')
+
  module.exports = router;
