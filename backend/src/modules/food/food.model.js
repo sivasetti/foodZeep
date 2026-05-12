@@ -40,7 +40,8 @@ getFood = async (user, filters) => {
 
         if(search){
             filterSql += ` AND name LIKE ?`;
-            queryParams.push(`${search}`);
+            const sanitizedSearch = search.trim();
+            queryParams.push(`${sanitizedSearch}`);
         }
 
         if( veg != undefined){
