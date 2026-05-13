@@ -38,7 +38,13 @@ const getOrder = async (req, res, next) => {
 const updateStatus = async (req, res, next) => {
     try{
         const {id} = req.params;
-        const {status} = req.body;
+        const { status } = req.body;
+        if(!status || typeof status != 'string'){
+            const error = new Error("Status is required and must be a string text");
+            error.status = 400;
+            throw error;
+        }
+        
         const sellerId = req.user.id;
 
         const result = await orderService.changeStatus(id, sellerId, status);

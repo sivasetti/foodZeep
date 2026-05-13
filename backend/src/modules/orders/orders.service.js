@@ -1,7 +1,7 @@
 const orderModel = require('../orders/orders.model.js');
 
 
-const changeStatus = async (userId, sellerId, status) => {
+const changeStatus = async (orderId, sellerId, status) => {
     const validStatuses = ['PLACED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
 
     const normalizedStatus = status.toUpperCase();
