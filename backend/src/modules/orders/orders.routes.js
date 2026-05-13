@@ -75,7 +75,47 @@ const { checkOutSchema } = require('../../validators/orders.validator');
       orderController.getOrder
  );
 
+/**
+ * @swagger
+ * /orders/status/{id}:
+ *   patch:
+ *     summary: Update order status (Sellers Only)
+ *     description: Allows a restaurant owner to update the lifecycle of an order.
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The unique ID of the order.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [PLACED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELLED]
+ *                 example: PREPARING
+ *     responses:
+ *       200:
+ *         description: Status updated successfully.
+ *       403:
+ *         description: Not authorized (Seller doesn't own this order).
+ *       400:
+ *         description: Invalid status provided.
+ */
+ router.patch(
+   '/status/:id',
+   authMiddleware.protect,
+   authMiddleware.authorize('seller', 'Admin'),
+   orderController.updateStatus
+ );
 
-// router.delete('delete/')
 
  module.exports = router;

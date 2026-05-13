@@ -35,11 +35,30 @@ const getOrder = async (req, res, next) => {
     }
 }
 
+const updateStatus = async (req, res, next) => {
+    try{
+        const {id} = req.params;
+        const {status} = req.body;
+        const sellerId = req.user.id;
+
+        const result = await orderService.changeStatus(id, sellerId, status);
+
+        return res.status(200).json({
+            success : true,
+            message : result.message
+        });
+    }
+    catch(error){
+        next(error);
+    }
+}
+
 
 const removeOrder = async (req, res, next) => {
     
 }
 module.exports = {
     addOrder,
-    getOrder
+    getOrder,
+    updateStatus
 }

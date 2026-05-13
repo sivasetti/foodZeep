@@ -1,5 +1,31 @@
 const orderModel = require('../orders/orders.model.js');
 
+
+const changeStatus = async (userId, sellerId, status) => {
+    const validStatuses = ['PLACED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
+
+    const normalizedStatus = status.toUpperCase();
+
+    if(!validStatuses.includes(normalizedStatus)){
+        const error = new Error("Invalid Stauses, Please use : " + validStatuses.join(', '));
+        error.status = 400;
+        throw error;
+    }
+
+    const result = await orderModel.updateOrderStatus(orderId, sellerId, normalizedStatus);
+
+    if(result.affectedRows === 0){
+        const error = new Error("Order not found or you are not authorized to update it");
+        error.status = 403 // forbidden
+        throw error;
+    }
+
+    return {
+        message : `Order ${orderId} is now ${normalizedStatus}`
+    }
+
+}
+
 const placeOrder = async (userId, orderData) => {
     const {items, total_amount} = orderData;
 
@@ -52,6 +78,7 @@ const removeOrders = async (userId) => {
 
 
 module.exports = {
+    changeStatus,
     placeOrder,
     getOrder
 }

@@ -40,7 +40,18 @@ const getOrdersByUserId = async (userId) => {
     return result;
 }
 
-// this is a temporary comment
+const updateOrderStatus = async (orderId, sellerId, newStatus) => {
+    const query = `
+                    UPDATE orders 
+                    SET status = ?
+                    WHERE id = ? AND seller_id = ?`
+
+    const [result] = await db.query(query, [newStatus, orderId, sellerId]);
+
+    return result;
+
+}
+
 
 
 const removeOrders = async (id) => {
@@ -55,5 +66,6 @@ const removeOrderItem = async (id) => {
 module.exports = {
     createOrder,
     createOrderItem,
-    getOrdersByUserId
+    getOrdersByUserId,
+    updateOrderStatus
 }
