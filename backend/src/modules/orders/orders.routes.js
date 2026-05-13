@@ -6,12 +6,12 @@
 const validate = require('../../middlewares/validation.middleware');
 const { checkOutSchema } = require('../../validators/orders.validator');
 
-
 /**
  * @swagger
- * /orders/checkout:
+ * /orders:
  *   post:
  *     summary: Place a new order
+ *     description: Creates an order record and links individual food items to it.
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -21,17 +21,45 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - total_amount
+ *               - items
  *             properties:
  *               total_amount:
  *                 type: number
+ *                 example: 500.00
  *               items:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     food_id: { type: integer }
- *                     quantity: { type: integer }
- *                     price: { type: number }
+ *                     food_id:
+ *                       type: integer
+ *                       example: 1
+ *                     quantity:
+ *                       type: integer
+ *                       example: 2
+ *                     price:
+ *                       type: number
+ *                       example: 250.00
+ *     responses:
+ *       201:
+ *         description: Order placed successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 orderId:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized - Bearer token missing or invalid.
+ *       500:
+ *         description: Internal Server Error.
  */
 
  router.post(
