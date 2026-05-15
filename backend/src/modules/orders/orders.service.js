@@ -1,4 +1,5 @@
 const orderModel = require('../orders/orders.model.js');
+const db = require('../../config/db.js');
 
 
 const changeStatus = async (orderId, sellerId, status) => {
@@ -29,15 +30,31 @@ const changeStatus = async (orderId, sellerId, status) => {
 const placeOrder = async (userId, orderData) => {
     const {items, total_amount} = orderData;
 
-    const orderId = await orderModel.createOrder(userId, total_amount);
+    const connection = await db.getConnection();
 
-    for (let item of items){
-        await orderModel.createOrderItem(orderId, item);
+    try{
+        await connection.beginTransaction();
+
+        const orderId = await orderModel.createOrder(userId, total_amount, connection);
+
+        for(let item of items){
+            await orderModel.createOrderItem(orderId, item, connection);
+        }
+
+        await connection.commit();
+
+        return {
+            orderId,
+            message : "Order Placed securely with transaction guarantees"
+        };
     }
+    catch(error){
+        await connection.rollback();
 
-    return {
-        orderId,
-        message : "Order placed and items recorded successfully"
+        throw error;
+    }
+    finally{
+        connection.release();
     }
 }
 
