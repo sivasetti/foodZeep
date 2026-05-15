@@ -1,5 +1,5 @@
 const orderModel = require('../orders/orders.model.js');
-const db = require('../../config/db.js');
+const {runInTransaction} = require('../../utils/transaction.js');
 
 
 const changeStatus = async (orderId, sellerId, status) => {
@@ -29,24 +29,19 @@ const changeStatus = async (orderId, sellerId, status) => {
 
 const placeOrder = async (userId, orderData) => {
     const {items, total_amount} = orderData;
-
-    const connection = await db.getConnection();
-
     try{
-        await connection.beginTransaction();
-
+    return await runInTransaction(async (connection) => {
         const orderId = await orderModel.createOrder(userId, total_amount, connection);
 
-        for(let item of items){
+        for(item of items){
             await orderModel.createOrderItem(orderId, item, connection);
         }
 
-        await connection.commit();
-
         return {
             orderId,
-            message : "Order Placed securely with transaction guarantees"
-        };
+            message : `Order placed successfully without polluting service layer architecture`
+            };
+        });
     }
     catch(error){
         await connection.rollback();
