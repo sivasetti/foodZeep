@@ -10,7 +10,8 @@ const options = {
         },
         servers:[
             {
-                url : 'http://localhost:5000'
+                url : 'http://localhost:5000/api',
+                description : 'Local Development Server'
             }
         ],
         components: {
@@ -24,7 +25,7 @@ const options = {
             }
     },
     apis : [
-        './src/modules/**/*.js'
+        './src/modules/**/*.routes.js'
     ]
 };
 
