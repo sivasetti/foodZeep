@@ -28,8 +28,8 @@ const getFood = async (user, query) => {
         price : query.price ? parseFloat(query.price) : null,
         sort : query.sort || 'id',
         order : query.order || 'ASC',
-        page : parseInt(query.page) || 1,
-        limit : parseInt(query.limit) || 10
+        page : Math.max(parseInt(query.page) || 1),
+        limit : Math.max(parseInt(query.limit) || 10)
     }
 
     const result = await foodModel.getFood(user, filters);
