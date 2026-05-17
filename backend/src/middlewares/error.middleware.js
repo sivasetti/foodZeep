@@ -1,11 +1,23 @@
-const errorHandler = (err, req, res, next) =>{
-    console.error(err);
+const logger = require('../config/logger');
 
-    return res.status(err.status || 500).json({
-        success : false,
-        message : err.message || `Internal Server Error`
+const errorHandler = (err, req, res, next) =>{
+    const statusCode = err.statusCode || 500;
+
+    //Structured Context Capture
+    logger.error({
+        message : err.message,
+        statusCode : statusCode, 
+        path : req.originalUrl,
+        method : req.method,
+        ip : req.ip,
+        stack : err.stack //Captures the exact line configuration path where code failed
     });
-};
+
+    res.status(statusCode).json({
+        success : false,
+        message : statusCode === 500 ? 'Internal Server Error' : err.message
+    });
+}
 
 
 module.exports = errorHandler;

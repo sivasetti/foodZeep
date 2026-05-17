@@ -5,9 +5,16 @@ const cors = require('cors');
 require('dotenv').config();
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
+const morgan = require('morgan');
+const logger = require('./config/logger');
 const errorHandler = require('./middlewares/error.middleware')
 
 const app = express();
+
+app.use(morgan('combined', {
+    stream : { write : (message) =>  logger.info(message.trim()) }
+}));
+
 app.use(helmet());
 
 const apiLimiter = rateLimit({

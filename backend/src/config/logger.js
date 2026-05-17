@@ -1,0 +1,26 @@
+const winston = require('winston');
+
+const logger = winston.createLogger({
+    level : 'info', //minimum security level to capture
+    format : winston.format.combine(
+        winston.format.timestamp({format : 'YYYY-MM-DD HH:MM:SS' }),
+        winston.format.json() //output as structure json object
+    ),
+    transports : [
+        //Writes all logic with level 'error' and below to error.log
+        new winston.transports.File({ filename : 'logs/error.log', level : 'error'}),
+        //Writes all logs with level info 'info' and below to combined.log
+    ]
+});
+
+// If we are developing locally, also print clean, colorized output to the terminal
+if(process.env.NODE_ENV !== 'production'){
+    logger.add(new winston.transports.Console({
+        format : winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+        )
+    }));
+}
+
+module.exports = logger;
