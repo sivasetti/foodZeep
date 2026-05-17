@@ -11,7 +11,6 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  * /orders:
  *   post:
  *     summary: Place a new order
- *     description: Creates an order record and links individual food items to it.
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -21,13 +20,10 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - total_amount
- *               - items
  *             properties:
  *               total_amount:
  *                 type: number
- *                 example: 500.00
+ *                 example: 350.00
  *               items:
  *                 type: array
  *                 items:
@@ -35,31 +31,16 @@ const { checkOutSchema } = require('../../validators/orders.validator');
  *                   properties:
  *                     food_id:
  *                       type: integer
- *                       example: 1
+ *                       example: 5
  *                     quantity:
  *                       type: integer
- *                       example: 2
+ *                       example: 1
  *                     price:
  *                       type: number
- *                       example: 250.00
+ *                       example: 350.00
  *     responses:
  *       201:
- *         description: Order placed successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 orderId:
- *                   type: integer
- *                 message:
- *                   type: string
- *       401:
- *         description: Unauthorized - Bearer token missing or invalid.
- *       500:
- *         description: Internal Server Error.
+ *         description: Order created inside secure transaction block successfully.
  */
 
  router.post(
