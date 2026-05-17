@@ -29,7 +29,7 @@ app.use('/api-docs',
 );
 app.use('/api', apiLimiter);
 
-app.use('./uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
 
 
 
