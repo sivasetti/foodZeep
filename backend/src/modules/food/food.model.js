@@ -27,7 +27,7 @@ createFood = async (data) => {
 
 
 getFood = async (user, filters) => {
-        const {search, veg, price, sort = 'id', order = 'ASC', page = 1, limit = 10} = filters;
+        const {search, veg, price, sort = 'id', order = 'ASC', page, limit} = filters;
         const offset = (page - 1) * limit;
 
         let filterSql = ` FROM food_items WHERE 1=1`;
