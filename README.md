@@ -2,7 +2,7 @@
 
 A production-grade, highly secure RESTful food delivery platform API built using **Node.js**, **Express.js**, and **MySQL**. Engineered with a clean, decoupled Layered Architecture (Controller-Service-Model), enterprise logging, data sanitization, atomic database transactions, and comprehensive native Swagger UI documentation.
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](#) <!-- Update link when collection is uploaded -->
+[![Run in Postman](https://run.pstmn.io/button.svg)](#)
 
 ---
 
@@ -33,7 +33,7 @@ A production-grade, highly secure RESTful food delivery platform API built using
 
 Before you get started, ensure you have the following installed on your machine:
 - [Node.js](https://nodejs.org/) v24 or higher
-- [MySQL Server](https://dev.mysql.com/downloads/mysql/) (v8.0+) or local instance running via XAMPP/WampServer
+- [MySQL Server](https://dev.mysql.com/downloads/mysql/) (v8.0+) or a local instance running via XAMPP/WampServer
 - npm (Node Package Manager)
 
 ---
