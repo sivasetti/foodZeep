@@ -2,7 +2,7 @@
 
 const app = require('./src/app');
 const db = require('./src/config/db');
-const logger = require('./config/logger');
+const logger = require('./src/config/logger');
 
 const PORT = process.env.PORT || 5000;
 
