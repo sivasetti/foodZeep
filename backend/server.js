@@ -2,9 +2,10 @@
 
 const app = require('./src/app');
 const db = require('./src/config/db');
+const config = require('./src/config/config.service');
 const logger = require('./src/config/logger');
 
-const PORT = process.env.PORT || 5000;
+const PORT = config.port;
 
 //Capture the server reference when startup
 app.listen(PORT, () => {

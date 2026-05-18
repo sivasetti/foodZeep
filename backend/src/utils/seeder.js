@@ -9,7 +9,7 @@ const mockFoodItems = [
         name : 'Margherita Pizza',
         quantity : 50,
         veg : 1,
-        image_url : 
+        image_url : ''
     }
 ];
 
