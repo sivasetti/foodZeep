@@ -1,109 +1,353 @@
 # 🍔 foodZeep Backend API
 
-A production-grade, highly secure RESTful food delivery platform API built using **Node.js**, **Express.js**, and **MySQL**. Engineered with a clean, decoupled Layered Architecture (Controller-Service-Model), enterprise logging, data sanitization, atomic database transactions, and comprehensive native Swagger UI documentation.
+A production-grade RESTful food delivery API built with **Node.js**, **Express.js**, and **MySQL**. Supports user registration, JWT authentication, food item management, image uploads, order placement, pagination, transactional order processing, and role-based authorization for customers, sellers, and admins. :contentReference[oaicite:0]{index=0}
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](#)
+[![Run in Postman](https://run.pstmn.io/button.svg)](YOUR_POSTMAN_COLLECTION_LINK)
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## 🛠️ Tech Stack
 
-- **Runtime Engine:** Node.js (v24+)
+- **Runtime:** Node.js
 - **Framework:** Express.js 5
-- **Database:** MySQL (`mysql2` driver with connection pooling)
-- **API Blueprinting:** Swagger UI (OpenAPI 3.0)
-- **Security & Perimeter:** Helmet, CORS, Express Rate Limit, XSS-Clean
+- **Database:** MySQL (`mysql2`)
 - **Authentication:** JWT (JSON Web Tokens)
-- **Password Security:** Bcrypt
-- **Media Engine:** Multer (Local File System Storage)
-- **Structured Logging:** Winston + Morgan HTTP Stream
-
----
-
-## 🔒 Production-Grade Security Features
-
-- **XSS Mitigation:** Global data sanitization via `xss-clean` to scrub `req.body`, `req.query`, and `req.params` before inputs hit controllers.
-- **Perimeter Defense:** Layered armor using `helmet` to hide tech stacks (`X-Powered-By`) and `express-rate-limit` restricting IPs to **100 requests per 15 minutes**.
-- **Data Integrity:** Enterprise **Transaction Wrapper Pattern** implemented via a decoupled `runInTransaction` utility, ensuring atomic operations (e.g., creating an order and its line items simultaneously) without polluting the business service layer with raw DB connection strings.
-- **Query Optimization:** Strategic indexing applied to high-traffic columns (`name`, `seller_id`, `user_id`) to transition searches from slow $O(N)$ full-table scans to microsecond $O(\log N)$ B-Tree lookups.
+- **Password Security:** bcrypt
+- **Security:** helmet, cors, express-rate-limit, xss-clean
+- **File Uploads:** multer
+- **Logging:** Winston + Morgan
+- **API Documentation:** Swagger UI (OpenAPI 3.0)
 
 ---
 
 ## ✅ Prerequisites
 
-Before you get started, ensure you have the following installed on your machine:
-- [Node.js](https://nodejs.org/) v24 or higher
-- [MySQL Server](https://dev.mysql.com/downloads/mysql/) (v8.0+) or a local instance running via XAMPP/WampServer
-- npm (Node Package Manager)
+- [Node.js](https://nodejs.org/) v24+
+- [MySQL](https://www.mysql.com/) v8+
+- npm
 
 ---
 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
+
 ```bash
 git clone <your-repository-url>
 cd foodZeep/backend
-2. Install dependenciesBashnpm install
-3. Set up environment variablesCreate a .env file inside the backend/ root directory (see the Environment Variables table below).4. Hydrate the DatabaseRun the schema-matched seeder script to instantly populate mock menus and users for immediate endpoint testing:Bashnode src/utils/seeder.js
-5. Run the projectBash# Development Mode (With Nodemon auto-restarts)
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+Create a `.env` file inside the backend root directory.
+
+```env
+PORT=5000
+
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=foodzeep_db
+
+JWT_SECRET=your_super_secret_key
+
+NODE_ENV=development
+```
+
+### 4. Seed the database
+
+Populate the database with sample users and food items.
+
+```bash
+node src/utils/seeder.js
+```
+
+### 5. Run the project
+
+```bash
+# Development
 npm run dev
 
-# Production Mode
+# Production
 npm start
-🔐 Environment VariablesVariableDescriptionExample / DefaultPORTPort the Express server runs on5000DB_HOSTMySQL connection host addresslocalhostDB_USERMySQL username credentialsrootDB_PASSWORDMySQL password credentialsyour_secure_passwordDB_NAMETarget application schema database namefoodzeep_dbJWT_SECRETSecret key for signing authorization tokenssuper_strong_unpredictable_secret_keyNODE_ENVMode setting changing log output rulesdevelopment⚠️ Security Warning: Never commit your production .env files to git version control.📁 Project StructurePlaintextsrc/
-├── server.js                     # Main entry point (HTTP Server + Graceful Shutdown)
-├── app.js                        # Express application setup & global middlewares
+```
+
+---
+
+## 🔐 Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|----------|
+| `PORT` | Port the server runs on | `5000` |
+| `DB_HOST` | MySQL database host | `localhost` |
+| `DB_USER` | MySQL username | `root` |
+| `DB_PASSWORD` | MySQL password | `your_password` |
+| `DB_NAME` | Database name | `foodzeep_db` |
+| `JWT_SECRET` | Secret key for JWT signing | `super_secret_key` |
+| `NODE_ENV` | Runtime environment | `development` |
+
+> ⚠️ Never commit your real `.env` files to version control.
+
+---
+
+## 📁 Project Structure
+
+```plaintext
+src/
+├── server.js                     # Entry point
+├── app.js                        # Express setup, middleware, routes
+
 ├── config/
-│   ├── db.js                     # MySQL Pool connection configuration
-│   ├── logger.js                 # Winston multi-transport structured logger
-│   └── swagger.js                # Swagger JSDoc configurations
+│   ├── db.js                     # MySQL connection pool
+│   ├── logger.js                 # Winston logger configuration
+│   └── swagger.js                # Swagger API documentation setup
+
 ├── middlewares/
-│   ├── error.middleware.js       # Centralized global error handler capturing stack traces
-│   └── auth.middleware.js        # JWT payload badge verification
+│   ├── auth.middleware.js        # JWT authentication middleware
+│   └── error.middleware.js       # Global error handling middleware
+
 ├── utils/
-│   ├── transaction.js            # Reusable transactional unit-of-work utility
-│   └── seeder.js                 # Automated schema-matched database test data builder
-└── modules/                      # Feature-driven modular directories
+│   ├── transaction.js            # Reusable DB transaction wrapper
+│   └── seeder.js                 # Database seeder script
+
+└── modules/
     ├── auth/
     │   ├── auth.controller.js
     │   ├── auth.service.js
     │   ├── auth.model.js
     │   └── auth.routes.js
+
     ├── food/
     │   ├── food.controller.js
     │   ├── food.service.js
     │   ├── food.model.js
     │   └── food.routes.js
-    └── orders/
-        ├── orders.controller.js
-        ├── orders.service.js
-        ├── orders.model.js
-        └── orders.routes.js
-📡 API EndpointsAll protected routes require a JWT bearer token passed inside the HTTP request headers setup:PlaintextAuthorization: Bearer <your_access_token>
-Authentication — /api/authMethodEndpointDescriptionAuth RequiredPOST/api/auth/registerRegister a new platform account❌ NoPOST/api/auth/loginAuthenticate details and fetch bearer token❌ NoFood Menu — /api/foodMethodEndpointDescriptionAuth RequiredPOST/api/foodUpload food items with profile image✅ Yes (Seller Only)GET/api/foodGet available dishes (Offset Paginated)❌ NoQuery parameters for /api/food:Plaintext?page=1&limit=10
-Orders — /api/ordersMethodEndpointDescriptionAuth RequiredPOST/api/ordersPlace an order executing atomic database writes✅ Yes (Customer Only)GET/api/orders/myRetrieve personal paginated order logs✅ Yes📝 Payload Request Examples1. User Registration (POST /api/auth/register)JSON{
+
+    ├── orders/
+    │   ├── orders.controller.js
+    │   ├── orders.service.js
+    │   ├── orders.model.js
+    │   └── orders.routes.js
+
+    └── users/
+        ├── users.controller.js
+        ├── users.service.js
+        ├── users.model.js
+        └── users.routes.js
+```
+
+---
+
+## 📡 API Endpoints
+
+### Authentication — `/api/auth`
+
+| Method | Endpoint | Description | Auth |
+|--------|-----------|-------------|------|
+| POST | `/api/auth/register` | Register a new user | ❌ |
+| POST | `/api/auth/login` | Login & receive JWT token | ❌ |
+
+---
+
+### Users — `/api/users`
+
+| Method | Endpoint | Description | Auth |
+|--------|-----------|-------------|------|
+| GET | `/api/users/profile` | Get logged-in user profile | ✅ |
+| PATCH | `/api/users/profile` | Update user profile | ✅ |
+| PATCH | `/api/users/password` | Change password | ✅ |
+| DELETE | `/api/users/profile` | Delete user account | ✅ |
+
+---
+
+### Food — `/api/food`
+
+| Method | Endpoint | Description | Auth |
+|--------|-----------|-------------|------|
+| POST | `/api/food` | Upload a food item with image | ✅ Seller Only |
+| GET | `/api/food` | Get all available food items | ❌ |
+| GET | `/api/food/:id` | Get single food item details | ❌ |
+| PATCH | `/api/food/:id` | Update food item | ✅ Seller Only |
+| DELETE | `/api/food/:id` | Delete food item | ✅ Seller Only |
+
+### Query params for `/api/food`
+
+```bash
+?page=1&limit=10
+```
+
+---
+
+### Orders — `/api/orders`
+
+| Method | Endpoint | Description | Auth |
+|--------|-----------|-------------|------|
+| POST | `/api/orders` | Place an order | ✅ Customer Only |
+| GET | `/api/orders/my` | Get logged-in user's orders | ✅ |
+| GET | `/api/orders/:id` | Get single order details | ✅ |
+| PATCH | `/api/orders/:id/status` | Update order status | ✅ Seller/Admin |
+| DELETE | `/api/orders/:id` | Cancel an order | ✅ |
+
+### Query params for `/api/orders/my`
+
+```bash
+?page=1&limit=10
+```
+
+---
+
+### Admin — `/api/admin` 🔒
+
+> All admin routes require `role: admin`
+
+| Method | Endpoint | Description |
+|--------|-----------|-------------|
+| GET | `/api/admin/users` | Get all users |
+| GET | `/api/admin/orders` | Get all orders |
+| GET | `/api/admin/foods` | Get all food items |
+| PATCH | `/api/admin/users/:id/block` | Block a user |
+| PATCH | `/api/admin/users/:id/unblock` | Unblock a user |
+| DELETE | `/api/admin/users/:id` | Delete a user |
+
+---
+
+## 🔑 Authentication
+
+All protected routes require a JWT access token in the `Authorization` header:
+
+```bash
+Authorization: Bearer <your_access_token>
+```
+
+You get the token from `/api/auth/login`.
+
+### Token Strategy
+
+- **JWT Token** — used for user authentication
+- **Protected Routes** — accessible only with valid tokens
+- **Role-Based Access** — Customer, Seller, and Admin permissions
+
+---
+
+## 📝 Request Examples
+
+### Register
+
+```json
+POST /api/auth/register
+
+{
   "name": "Siva Setti",
   "email": "siva@example.com",
   "password": "SecurePassword123",
-  "role": "customer" 
+  "role": "customer"
 }
-2. User Login (POST /api/auth/login)JSON{
+```
+
+---
+
+### Login
+
+```json
+POST /api/auth/login
+
+{
   "email": "siva@example.com",
   "password": "SecurePassword123"
 }
-Response Output:JSON{
-  "success": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-3. Uploading Food Item (POST /api/food)⚠️ Note: Requires HTTP request content-type header structured as multipart/form-data to receive the image file processing.KeyTypeValue / ExamplenameTextChicken BiryanipriceText350.00quantityText30vegText0 (for Non-Veg) or 1 (for Veg)expiry_timeText2026-06-01 23:59:59imageFile[Upload item_photo.jpg]4. Checkout Order Placing (POST /api/orders)JSON{
-  "total_amount": 700.00,
+```
+
+---
+
+### Upload Food Item
+
+```http
+POST /api/food
+Authorization: Bearer <token>
+Content-Type: multipart/form-data
+```
+
+| Field | Type | Example |
+|------|------|----------|
+| `name` | Text | Chicken Biryani |
+| `price` | Text | 350 |
+| `quantity` | Text | 20 |
+| `veg` | Text | 0 |
+| `expiry_time` | Text | 2026-06-01 23:59:59 |
+| `image` | File | biryani.jpg |
+
+---
+
+### Place Order
+
+```json
+POST /api/orders
+
+{
+  "total_amount": 700,
   "items": [
     {
       "food_id": 1,
       "quantity": 2,
-      "price": 350.00
+      "price": 350
     }
   ]
 }
-🛑 Resilient Process Lifecycle (Graceful Shutdown)The application implements a strict zero-downtime lifecycle process. When receiving termination signals (SIGINT, SIGTERM), the engine actively prevents data corruption:Locks Gates: Stops accepting incoming connection payloads immediately via server.close().Drains Queries: Allows active in-flight requests and transactions to finish computing safely.Releases Pool: Safely drains and disconnects the MySQL connection pool cleanly before exiting the runtime environment.
+```
+
+---
+
+## 🔒 Security Features
+
+- Passwords hashed with **bcrypt**
+- JWT-based authentication
+- Request sanitization using **xss-clean**
+- HTTP headers secured with **helmet**
+- Rate limiting — max **100 requests / 15 minutes**
+- Role-based authorization middleware
+- Centralized global error handling
+- Atomic database transactions for order processing
+- Secure CORS configuration
+
+---
+
+## ⚡ Performance Optimizations
+
+- MySQL connection pooling
+- Indexed database queries
+- Offset-based pagination
+- Transaction wrapper utility for atomic writes
+- Structured production-grade logging
+
+---
+
+## 📚 Swagger API Documentation
+
+Swagger UI documentation available at:
+
+```bash
+http://localhost:5000/api-docs
+```
+
+---
+
+## 🛑 Graceful Shutdown Handling
+
+The application safely handles shutdown signals (`SIGINT`, `SIGTERM`) by:
+
+- Stopping new incoming requests
+- Completing active database transactions
+- Closing MySQL connection pools safely
+- Preventing data corruption during crashes or deployments
+
+---
+
+## 👨‍💻 Author
+
+Built by **Siva Setti** using scalable backend engineering practices and production-grade Node.js architecture.
