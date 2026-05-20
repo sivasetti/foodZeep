@@ -8,10 +8,12 @@ const logger = require('./src/config/logger');
 const PORT = config.port;
 
 //Capture the server reference when startup
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     logger.info(`Server is running securely on PORT ${PORT}`);
 });
 
+
+require('./src/utils/cron')
 // Centralized Shutdown Handler Function
 const handleGracefulShutdown = (signal) => {
     logger.warn(`Received ${signal}. Starting production graceful shutdown sequence...`);
