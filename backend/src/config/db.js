@@ -2,10 +2,10 @@ const mysql = require('mysql2');
 const config = require('./config.service');
 
 const pool = mysql.createPool({
-    host : config.host,
-    user : config.user,
-    password : config.password,
-    database : config.name,
+    host : config.db.host,
+    user : config.db.user,
+    password : config.db.password,
+    database : config.db.name,
 
     connectionLimit : 10,
     waitForConnections : true,
