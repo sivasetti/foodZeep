@@ -2,7 +2,7 @@
 
 A production-grade RESTful food delivery API built with **Node.js**, **Express.js**, and **MySQL**. Supports user registration, JWT authentication, food item management, image uploads, order placement, pagination, transactional order processing, automated background sweeps, schema migrations, observability logging, and role-based authorization for customers, sellers, and admins. :contentReference[oaicite:0]{index=0}
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://github.com/sivasetti/foodZeep/tree/main/postman/collections/New%20Collection)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://github.com/sivasetti/foodZeep/tree/main/postman/collections/Orders)
 
 ---
 
