@@ -1,6 +1,6 @@
 # 🍔 foodZeep Backend API
 
-A production-grade RESTful food delivery API built with **Node.js**, **Express.js**, and **MySQL**. Supports user registration, JWT authentication, food item management, image uploads, order placement, pagination, transactional order processing, and role-based authorization for customers, sellers, and admins. :contentReference[oaicite:0]{index=0}
+A production-grade RESTful food delivery API built with **Node.js**, **Express.js**, and **MySQL**. Supports user registration, JWT authentication, food item management, image uploads, order placement, pagination, transactional order processing, automated background sweeps, schema migrations, observability logging, and role-based authorization for customers, sellers, and admins. :contentReference[oaicite:0]{index=0}
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](YOUR_POSTMAN_COLLECTION_LINK)
 
@@ -8,14 +8,16 @@ A production-grade RESTful food delivery API built with **Node.js**, **Express.j
 
 ## 🛠️ Tech Stack
 
-- **Runtime:** Node.js
+- **Runtime:** Node.js (v24+)
 - **Framework:** Express.js 5
-- **Database:** MySQL (`mysql2`)
+- **Database Engine:** MySQL (`mysql2`)
+- **Schema Management & Version Control:** Knex.js
+- **Background Task Scheduling:** Node-Cron
 - **Authentication:** JWT (JSON Web Tokens)
 - **Password Security:** bcrypt
 - **Security:** helmet, cors, express-rate-limit, xss-clean
 - **File Uploads:** multer
-- **Logging:** Winston + Morgan
+- **Logging & Observability:** Winston + Morgan
 - **API Documentation:** Swagger UI (OpenAPI 3.0)
 
 ---
@@ -37,11 +39,15 @@ git clone <your-repository-url>
 cd foodZeep/backend
 ```
 
+---
+
 ### 2. Install dependencies
 
 ```bash
 npm install
 ```
+
+---
 
 ### 3. Set up environment variables
 
@@ -60,7 +66,23 @@ JWT_SECRET=your_super_secret_key
 NODE_ENV=development
 ```
 
-### 4. Seed the database
+---
+
+### 4. Database Baseline & Migrations
+
+Instead of manual SQL imports, foodZeep uses **Knex.js** to automatically construct, version, and scale the database schema.
+
+```bash
+# Verify migration synchronization status
+npx knex migrate:status --knexfile knexfile.js
+
+# Apply latest schema migrations
+npx knex migrate:latest --knexfile knexfile.js
+```
+
+---
+
+### 5. Seed the database
 
 Populate the database with sample users and food items.
 
@@ -68,10 +90,12 @@ Populate the database with sample users and food items.
 node src/utils/seeder.js
 ```
 
-### 5. Run the project
+---
+
+### 6. Run the project
 
 ```bash
-# Development
+# Development (nodemon auto reload)
 npm run dev
 
 # Production
@@ -100,20 +124,26 @@ npm start
 
 ```plaintext
 src/
-├── server.js                     # Entry point
+├── server.js                     # Entry point (listeners & lifecycle guards)
 ├── app.js                        # Express setup, middleware, routes
+├── knexfile.js                   # Knex schema configuration
 
 ├── config/
-│   ├── db.js                     # MySQL connection pool
-│   ├── logger.js                 # Winston logger configuration
+│   ├── db.js                     # Managed MySQL connection pool
+│   ├── logger.js                 # Winston structured logger
 │   └── swagger.js                # Swagger API documentation setup
+
+├── DB/
+│   └── migrations/               # Knex migration blueprints
+│       └── 20260520170503_initialize_db.js
 
 ├── middlewares/
 │   ├── auth.middleware.js        # JWT authentication middleware
-│   └── error.middleware.js       # Global error handling middleware
+│   └── errorHandler.js           # Centralized error translation middleware
 
 ├── utils/
-│   ├── transaction.js            # Reusable DB transaction wrapper
+│   ├── transaction.js            # Reusable transactional wrapper
+│   ├── cron.js                   # Automated cron cleanup workers
 │   └── seeder.js                 # Database seeder script
 
 └── modules/
@@ -229,9 +259,9 @@ You get the token from `/api/auth/login`.
 
 ### Token Strategy
 
-- **JWT Token** — used for user authentication
+- **JWT Token** — secure stateless authentication
 - **Protected Routes** — accessible only with valid tokens
-- **Role-Based Access** — Customer, Seller, and Admin permissions
+- **Role-Based Authorization** — Customer, Seller, and Admin permissions
 
 ---
 
@@ -303,27 +333,55 @@ POST /api/orders
 
 ---
 
-## 🔒 Security Features
+## 🔒 Security Features & Integrity Guards
 
-- Passwords hashed with **bcrypt**
-- JWT-based authentication
+- Password hashing using **bcrypt**
+- JWT-based authentication & authorization
 - Request sanitization using **xss-clean**
-- HTTP headers secured with **helmet**
+- HTTP header hardening using **helmet**
 - Rate limiting — max **100 requests / 15 minutes**
-- Role-based authorization middleware
-- Centralized global error handling
-- Atomic database transactions for order processing
 - Secure CORS configuration
+- Centralized REST error translation middleware
+- Atomic transactional order processing
+- Constraint-relaxed migration handling using `FOREIGN_KEY_CHECKS`
 
 ---
 
 ## ⚡ Performance Optimizations
 
-- MySQL connection pooling
-- Indexed database queries
+- High-throughput **MySQL connection pooling**
+- Optimized **B-Tree indexing** for high-frequency queries
 - Offset-based pagination
-- Transaction wrapper utility for atomic writes
-- Structured production-grade logging
+- Reusable higher-order transaction wrapper
+- Automated background janitor cron engine
+- Structured observability logging
+
+---
+
+## 📊 Observability & System Logging
+
+Winston-based structured logging captures request context and application errors:
+
+```json
+{
+  "message": "Duplicate email already registered.",
+  "statusCode": 400,
+  "path": "/api/auth/register",
+  "method": "POST",
+  "ip": "127.0.0.1"
+}
+```
+
+---
+
+## 🛑 Graceful Shutdown Handling
+
+The application securely monitors process termination signals (`SIGINT`, `SIGTERM`) to:
+
+- Stop accepting new requests
+- Allow active transactions to complete safely
+- Drain and close MySQL connection pools
+- Prevent runtime data corruption during deployments
 
 ---
 
@@ -337,17 +395,6 @@ http://localhost:5000/api-docs
 
 ---
 
-## 🛑 Graceful Shutdown Handling
-
-The application safely handles shutdown signals (`SIGINT`, `SIGTERM`) by:
-
-- Stopping new incoming requests
-- Completing active database transactions
-- Closing MySQL connection pools safely
-- Preventing data corruption during crashes or deployments
-
----
-
 ## 👨‍💻 Author
 
-Built by **Siva Setti** using scalable backend engineering practices and production-grade Node.js architecture.
+Built by **Siva Setti** using scalable backend engineering practices, clean architectural layering, and production-ready Node.js design patterns.
