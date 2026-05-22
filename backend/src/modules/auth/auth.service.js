@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const authModel = require('./auth.model');
 const jwt = require('jsonwebtoken');
 
-async function registerUser(data) {
+const registerUser= async (data) =>{
     const {name, email, password, role} = data;
 
     // checking existing user
@@ -34,8 +34,7 @@ async function getUsers() {
 
 
 
-
-async function login(data) {
+const login = async (data) => {
     const {email, password} = data;
 
     const user = await authModel.getEmailByUser(email);
