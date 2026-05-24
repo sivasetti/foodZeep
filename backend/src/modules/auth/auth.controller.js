@@ -50,7 +50,6 @@ login = async (req, res, next) => {
         return res.status(200).json({
             success : true,
             message : `Login successfull`,
-            token : result.token,
             data : result
         });
     }
