@@ -26,8 +26,17 @@ async function getAllUsers() {
     return rows;
 }
 
+const saveRefreshToken = async (userId, token, expiresAt) => {
+    return await knex('refresh_tokens').insert({
+        user_id : userId,
+        token : token,
+        expiresAt : expiresAt
+    });
+};
+
 module.exports = {
     createUser,
     getEmailByUser,
-    getAllUsers
+    getAllUsers,
+    saveRefreshToken
 }
