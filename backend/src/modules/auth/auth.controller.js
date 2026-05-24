@@ -37,9 +37,20 @@ getUsersAll = async (req, res, next) => {
 login = async (req, res, next) => {
     try{
         const result = await authService.login(req.body);
+        
+        //put the refresh token inside the secure HTTP-Only cookie 
 
-        res.status(200).json({
+        res.cookie('refreshToken', result.refreshToken, {
+            httpOnly : true, //safeguard against hacker scripts
+            secure : process.env.NODE_ENV === 'production',
+            expires : result.expiresAt, //Deletes automatically in 7 days
+            sameSite : 'Lax'
+        })
+
+        return res.status(200).json({
+            success : true,
             message : `Login successfull`,
+            token : result.token,
             data : result
         });
     }
