@@ -1,4 +1,8 @@
 const db = require('../../config/db');
+// const knex = require('knex');
+// const knexFile = require('../../../knexfile.js');
+
+// const knexInstance = knex(knexConfig.development);
 
 async function createUser({name, email, password, role}) {
     const query = `INSERT INTO users (name, email, password, role) 
@@ -27,16 +31,16 @@ async function getAllUsers() {
 }
 
 const saveRefreshToken = async (userId, token, expiresAt) => {
-    return await knex('refresh_tokens').insert({
-        user_id : userId,
-        token : token,
-        expiresAt : expiresAt
-    });
+    const expires_At = expiresAt.toISOString().slice(0, 19).replace('T', ' ');
+    return await db.query(`INSERT INTO refresh_tokens (user_id, token, expires_At) VALUES (?, ?, ?)`,
+        [userId, token, expires_At]
+    );
 };
 
 module.exports = {
     createUser,
     getEmailByUser,
     getAllUsers,
-    saveRefreshToken
+    saveRefreshToken,
+    // knexInstance
 }

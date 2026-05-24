@@ -8,7 +8,6 @@ const swaggerSpec = require('./config/swagger');
 const morgan = require('morgan');
 const logger = require('./config/logger');
 const errorHandler = require('./middlewares/error.middleware');
-const xss = require('xss-clean');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -33,7 +32,6 @@ const apiLimiter = rateLimit({
 });
 app.use(express.json({limit : '10kb'}));
 
-app.use(xss());
 
 app.use(cors());
 app.use('/api-docs',

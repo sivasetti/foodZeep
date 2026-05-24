@@ -28,8 +28,7 @@
     "mysql2": "^3.22.2",
     "node-cron": "^4.2.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "xss-clean": "^0.1.4"
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
