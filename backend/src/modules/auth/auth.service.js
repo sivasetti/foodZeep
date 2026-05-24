@@ -68,16 +68,8 @@ const login = async (data) => {
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
-    const mysqlExpiresAt = expiresAt.toISOString().slice(0,19).replace('T', ' ');
 
-
-    // save this into refresh_tokens table
-
-    await pool.query(
-        `INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES (?, ?, ?)`,
-        [user.id, refreshToken, mysqlExpiresAt]
-    );
-
+    await authModel.saveRefreshToken(user.id, refreshToken, expiresAt);
 
     return {
         token,
