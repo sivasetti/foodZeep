@@ -40,7 +40,7 @@ const saveRefreshToken = async (userId, token, expiresAt) => {
 const findRefreshToken = async (tokenString) => {
     // join with the users table, so that we can fetch the user's role at the same time
     const [rows] = await db.query(
-        `SELECT rt.*, u.role FROM refresh_tokens rt JOIN USERS u ON rt.user_id = u.id WHERE rt.token = ?`;
+        `SELECT rt.*, u.role FROM refresh_tokens rt JOIN USERS u ON rt.user_id = u.id WHERE rt.token = ?;`,
         [tokenString]
     );
     return rows[0];
@@ -50,12 +50,23 @@ const deleteRefreshToken = async (tokenId) => {
     return await db.query(`DELETE FROM refresh_tokens WHERE id = ?`, [tokenId]);
 }
 
+
+//logout code
+
+const revokeToken = async (tokenString) => {
+    //completely deletes the token matching the exact string footprint
+    return await db.query('DELETE FROM refresh_tokens WHERE token = ?', [tokenString]);
+};
+
+
+
 module.exports = {
     createUser,
     getEmailByUser,
     getAllUsers,
     saveRefreshToken,
     findRefreshToken,
-    deleteRefreshToken
+    deleteRefreshToken,
+    revokeToken
     // knexInstance
 }

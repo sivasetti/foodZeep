@@ -88,5 +88,28 @@ const refresh = async (req, res, next) => {
 }
 
 
+const logout = async (req, res, next) => {
+    try{
+        // 1. Grab the active token string from incoming cookie 
+        const tokenString = req.cookies.refreshToken;
 
-module.exports = {register, getUsersAll, login, refresh};
+        await authService.logoutSession(tokenString);
+
+        res.clearCookie('refreshToken', {
+            httpOnly : true,
+            secure : process.env.NODE_ENV === 'production',
+            sameSite : 'Lax'
+        });
+
+        return res.status(200).json({
+            success : true,
+            message : 'Logged out securely, session destroyed successfully'
+        });
+    }
+    catch(error){
+        next(error);
+    }
+}
+
+
+module.exports = {register, getUsersAll, login, refresh, logout};

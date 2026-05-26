@@ -127,4 +127,10 @@ return{
 
 }
 
-module.exports = {registerUser, getUsers, login, refreshSession};
+
+const logoutSession = async (tokenString) => {
+    if(!tokenString) return; // if there's no token passed, skip to prevent crashing
+    //hand it to the model to erase it from the table ledger
+    await authModel.revokeToken(tokenString);
+}
+module.exports = {registerUser, getUsers, login, refreshSession, logoutSession};
