@@ -42,5 +42,6 @@ router.get('/getAllUsers',authMiddleware.protect, authMiddleware.authorize('Admi
  */
 
 router.post('/login',validate(loginSchema), authController.login);
+router.post('/refresh', authController.refresh);
 
 module.exports = router;

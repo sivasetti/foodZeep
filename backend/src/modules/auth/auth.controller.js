@@ -59,7 +59,34 @@ login = async (req, res, next) => {
 
 }
     
+const refresh = async (req, res, next) => {
+    try{
+        const oldToken = req.cookies.refresToken;
+        if(!oldToken){
+            return res.status(401).json({success : false, message : 'No session token provided'});
+        }
+
+        // pass it to the service to rotate tokens out safely
+        const result = await authService.refreshSession(oldToken);
+
+        // Attach the brand new rotated token back into the browser cookie box
+        res.cookie('refreshToken', result.refreshToken, {
+            httpOnly : true,
+            secure : process.env.NODE_ENV === 'production',
+            expires : result.expiresAt,
+            sameSite : 'Lax'
+        });
+        // return the temporary access token to the frontend memory
+        return res.status(200).json({
+            success : true,
+            accessToken : result.accessToken
+        });
+    }
+    catch(error){
+        next(error);
+    }
+}
 
 
 
-module.exports = {register, getUsersAll, login};
+module.exports = {register, getUsersAll, login, refresh};

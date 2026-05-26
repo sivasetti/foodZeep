@@ -85,4 +85,46 @@ const login = async (data) => {
 }
 
 
-module.exports = {registerUser, getUsers, login};
+const refreshSession = async (oldTokenString) => {
+    // 1. Lookup the token in the database
+    const session = await authModel.findRefreshTokens(oldTokenString);
+    if(!session){
+        throw new Error("Invalid Session token, Please login again");
+    }
+    //2. check if the token has expired past its 7-day lifetime
+    if(new Date() > new Date(session.expires_at)){
+        await authModel.deleteRefreshToken(session.id);
+        throw new Error("Session Expired, Login again");
+    }
+    //3.Token Rotation : Delete the old token from the table immediately
+    await authModel.deleteRefreshToken(session.id);
+
+    //4. Generate a brand new 15-minute Access token
+    const newAccessToken = jwt.sign({
+        id : session.user_id,
+        role : session.role
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn : '15m'
+    }
+);
+
+//5.Generate a brand-new 7-day refresh token
+const newRefreshToken = crypto.randomBytes(40).toString('hex');
+const nextExpiry = new Date();
+nextExpiry.setDate(nextExpiry.getDate() + 7);
+
+//6. Save the brand-new refresh token back into the database
+await authModel.saveRefreshToken(session.user_id, newRefreshtoken, nextExpiry);
+
+//7. send the refresh tokens back to the controller
+return{
+    accessToken : newAccessToken,
+    refreshToken : newRefreshToken,
+    expiresAt : nextExpiry
+    };
+
+}
+
+module.exports = {registerUser, getUsers, login, refreshSession};
