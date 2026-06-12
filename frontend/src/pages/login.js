@@ -9,12 +9,13 @@ loginForm.addEventListener('submit', async (e) =>{
 
     try{
         const response = await fetch(
-            'http://localhost:5000/auth/login',
+            'http://localhost:5000/api/auth/login',
             {
                 method : 'POST',
                 headers : {
                     'Content-Type' : 'application/json'
                 },
+                credentials : 'include',
                 body: JSON.stringify({
                     email,
                     password
@@ -27,7 +28,7 @@ loginForm.addEventListener('submit', async (e) =>{
         console.log(result);
 
         if(response.ok){
-            const token = result.data.token;
+            const token = result.accessToken;
 
             localStorage.setItem(
                 'token',
