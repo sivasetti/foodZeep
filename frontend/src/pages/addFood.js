@@ -12,6 +12,34 @@ const deleteFood = document.getElementById('deleteFood');
 const deleteMessage = document.getElementById('deleteMessage');
 
 
+trySilentRefresh = async () => {
+    try{
+        const response = await fetch('http://localhost:5000/api/auth/refresh', {
+            method : 'POST',
+            credentials : 'include'
+        });
+
+        const result = await response.json();
+
+        if(response.ok && result.accessToken){
+            // Success! update our variable and localStorage
+            token = result.accessToken,
+            localStorage.setItem('token', token);
+            return true;
+        }
+    }
+    catch(err){
+        console.error("Silent refresh handshake failed", err.message);
+    }
+
+
+    // if the refresh failed(the 7 days expired too), clear state and kick to login
+    localStorage.removeItem('token');
+    window.location.href = "index.html";
+    return false;
+}
+
+
 logout.addEventListener('click', ()=>{
     localStorage.removeItem('token');
     window.location.href = 'index.html'
