@@ -40,9 +40,22 @@ trySilentRefresh = async () => {
 }
 
 
-logout.addEventListener('click', ()=>{
-    localStorage.removeItem('token');
-    window.location.href = 'index.html'
+logout.addEventListener('click', async ()=>{
+    try{
+        // Tell backend to shred the token session row in mysql
+        await fetch('http://localhost:5000/api/auth/logout', {
+            method : 'POST',
+            credentials : 'include' // Include cookies so that backend knows which session to shred
+        });
+    }
+    catch(err){
+        console.log("Network error while cleaning backend session", err.message);
+    }
+    finally{
+        //Always clean the browser clipboard memory no matter what
+        localStorage.removeItem('token');
+        window.location.href = 'index.html';
+    }
 });
 
 
