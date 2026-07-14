@@ -66,7 +66,6 @@ foodForm.addEventListener('submit', async (e) =>{
     const name = document.getElementById('name').value;
     const quantity = document.getElementById('quantity').value;
     const price = document.getElementById('price').value;
-
     const expiry_time = document.getElementById('expiry_time').value;
     const veg = document.getElementById('veg').value === 'true';
 
@@ -105,6 +104,8 @@ foodForm.addEventListener('submit', async (e) =>{
         message.innerText = `Server Error`
     }
 });
+
+
 
 
 
