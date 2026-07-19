@@ -150,4 +150,3 @@ Cloud Deployment
 
 Never introduce technologies before the project genuinely needs them.
 
-This is introduced by open code
